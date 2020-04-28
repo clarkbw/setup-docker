@@ -1014,33 +1014,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __webpack_require__(470);
+const core = __importStar(__webpack_require__(470));
 const exec_1 = __webpack_require__(986);
+const path_1 = __webpack_require__(622);
+const io_1 = __webpack_require__(1);
 function docker() {
     return __awaiter(this, void 0, void 0, function* () {
-        const username = core_1.getInput('username', { required: true });
-        const password = core_1.getInput('password', { required: true });
-        const registry = core_1.getInput('registry');
-        core_1.setSecret(password);
-        let output = '';
+        const username = core.getInput('username', { required: true });
+        const password = core.getInput('password', { required: true });
+        const registry = core.getInput('registry');
+        core.setSecret(password);
         const options = {
-            input: Buffer.from(password),
-            listeners: {
-                stdout: (data) => {
-                    output += data.toString();
-                },
-                stderr: (data) => {
-                    output += data.toString();
-                }
-            }
+            input: Buffer.from(password)
         };
-        //   echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
-        yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], options);
-        return output;
+        yield config();
+        // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
+        return yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], options);
     });
 }
 exports.docker = docker;
+function config() {
+    return __awaiter(this, void 0, void 0, function* () {
+        // https://docs.docker.com/engine/reference/commandline/cli/#change-the-docker-directory
+        const temp = process.env['RUNNER_TEMP'] || '';
+        const dir = path_1.join(temp, `.docker-${Date.now()}`);
+        yield io_1.mkdirP(dir);
+        core.exportVariable('DOCKER_CONFIG', dir);
+        core.debug(`DOCKER_CONFIG = ${config}`);
+    });
+}
 
 
 /***/ }),
