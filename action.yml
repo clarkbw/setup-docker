@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Setup Docker Action'
+description: 'Action to setup and log you into your Docker registry'
+author: 'Bryan Clark'
 inputs:
   username:
     description: 'username for docker registry'
