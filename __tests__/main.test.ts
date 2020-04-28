@@ -6,3 +6,7 @@ import * as path from 'path';
 test('we are still in reality', () => {
   expect(true);
 });
+
+test('config files exist', () => {
+  expect(true);
+});
