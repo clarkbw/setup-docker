@@ -2,9 +2,14 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  username:
+    description: 'username for docker registry'
+  password:
+    description: 'password or token for docker registry'
+  registry:
+    description: 'domain name for the docker registry, e.g. docker.pkg.github.com'
+    default: 'docker.pkg.github.com'
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
