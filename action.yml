@@ -8,7 +8,7 @@ inputs:
     description: 'password or token for docker registry'
   registry:
     description: 'domain name for the docker registry, e.g. docker.pkg.github.com'
-    default: 'docker.pkg.github.com'
+    default: 'containers.pkg.github.com'
   experimental:
     description: 'turn on experimental docker client features'
 
