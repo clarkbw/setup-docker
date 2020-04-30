@@ -2,71 +2,77 @@
   <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
 </p>
 
-# Create a JavaScript Action using TypeScript
+# Why
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+Many Actions workflows require a step for logging into Docker and there are a mirriad of ways to accomplish this.
 
-This template includes compilication support, tests, a validation workflow, publishing, and versioning guidance.  
+## Ways to log into Docker
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+Here are several common ways to log into Docker.
 
-## Create an action from this template
+### The preferred method
 
-Click the `Use this Template` and provide the new repo details for your action
+This method hides the password from logs and shell history by piping it in
 
-## Code in Master
-
-Install the dependencies  
-```bash
-$ npm install
+```yml
+  - name: Login to docker
+    run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u github-actions --password-stdin
 ```
 
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run pack
+### The security risk
+
+This method allows your password to possibly be recorded in logs and / or shell history
+
+```yml
+  - name: Login to docker
+    run:  docker login docker.pkg.github.com -u github-actions --password ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
+###
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+## Cleaning up
 
-...
+Finally this action is designed to clean up the Docker credentials after the job is run because by default Docker saves the passwords in a plaintext `config.json` file.
+
+# Usage
+
+Add the `clarkbw/setup-docker@master` to your Actions workflow file.  To log into a registry you'll need to pass in a username, password, and registry domain.
+
+```yml
+- uses: clarkbw/setup-docker@master
+  with:
+    username: $GITHUB_ACTOR
+    password: ${{ secrets.GITHUB_TOKEN }}
+    registry: docker.pkg.github.com
 ```
 
-## Change action.yml
+And here's how it looks in a full example.  If login your job will continue and you can use your `docker build` and `docker push` commands.
 
-The action.yml contains defines the inputs and output for your action.
+```yml
+name: Docker Image CI
 
-Update the action.yml with your name, description, inputs and outputs for your action.
+on:
+  push:
 
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
+jobs:
 
-## Change the Code
+  build:
 
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
+    runs-on: ubuntu-latest
 
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
+    steps:
+    - uses: actions/checkout@v2
+    - uses: clarkbw/setup-docker@master
+      with:
+        username: $GITHUB_ACTOR
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build the Docker image
+      run: docker build . --tag docker.pkg.github.com/github/container-registry-playground/container-registry-playground:latest
+    - name: Publish the Docker image
+      run: docker push docker.pkg.github.com/github/container-registry-playground/container-registry-playground:latest
 ```
 
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
+
 
 ## Publish to a distribution branch
 
