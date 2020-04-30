@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import {exec} from '@actions/exec';
 import {join} from 'path';
 import {mkdirP} from '@actions/io';
+import {config} from './config';
 
 export async function docker(): Promise<number> {
   const username: string = core.getInput('username', {required: true});
@@ -18,13 +19,4 @@ export async function docker(): Promise<number> {
     ['login', registry, '-u', username, '--password-stdin'],
     {input: Buffer.from(password)}
   );
-}
-
-async function config(): Promise<void> {
-  // https://docs.docker.com/engine/reference/commandline/cli/#change-the-docker-directory
-  const temp: string = process.env['RUNNER_TEMP'] || '';
-  const dir = join(temp, `.docker-${Date.now()}`);
-  await mkdirP(dir);
-  core.exportVariable('DOCKER_CONFIG', dir);
-  console.log(`$DOCKER_CONFIG = ${config}`);
 }

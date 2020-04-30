@@ -6,6 +6,7 @@ export async function run() {
     await rmRF(directory);
     console.log(`cleanup: removing $DOCKER_CONFIG directory ${directory}`);
   }
+  delete process.env['DOCKER_CONFIG'];
 }
 
 run();
