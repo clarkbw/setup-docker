@@ -69,6 +69,4 @@ This method allows your password to possibly be recorded in logs and / or shell 
 
 ## Cleaning up
 
-_COMING SOON_
-
 Finally this action is designed to clean up the Docker credentials after the job is run because by default Docker saves the passwords in a plaintext `config.json` file.
