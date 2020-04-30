@@ -34,7 +34,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(198);
+/******/ 		return __webpack_require__(131);
 /******/ 	};
 /******/
 /******/ 	// run startup
@@ -961,7 +961,7 @@ module.exports = require("child_process");
 
 /***/ }),
 
-/***/ 198:
+/***/ 131:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
@@ -984,7 +984,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const docker_1 = __webpack_require__(231);
+const docker_1 = __webpack_require__(216);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -1000,7 +1000,7 @@ run();
 
 /***/ }),
 
-/***/ 231:
+/***/ 216:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
@@ -1031,13 +1031,10 @@ function docker() {
         const username = core.getInput('username', { required: true });
         const password = core.getInput('password', { required: true });
         const registry = core.getInput('registry');
-        core.setSecret(password);
-        const options = {
-            input: Buffer.from(password)
-        };
+        core.setSecret(password); // should be a no-op but always do this to be safe
         yield config();
         // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
-        return yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], options);
+        return yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], { input: Buffer.from(password) });
     });
 }
 exports.docker = docker;
@@ -1048,7 +1045,7 @@ function config() {
         const dir = path_1.join(temp, `.docker-${Date.now()}`);
         yield io_1.mkdirP(dir);
         core.exportVariable('DOCKER_CONFIG', dir);
-        core.debug(`DOCKER_CONFIG = ${config}`);
+        console.log(`$DOCKER_CONFIG = ${config}`);
     });
 }
 

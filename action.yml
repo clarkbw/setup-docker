@@ -13,4 +13,4 @@ inputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
-# post: 'dist/cleanup/index.js' to remove config files
+  post: 'dist/cleanup/index.js'
