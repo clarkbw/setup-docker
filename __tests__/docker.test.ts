@@ -1,11 +1,11 @@
 import {docker} from '../src/docker';
 import * as config from '../src/config';
 
+import * as path from 'path';
+
 import * as exec from '@actions/exec';
 
-test('calls config', () => {
-  expect(true);
-});
+process.env['RUNNER_TEMP'] = path.join(__dirname, 'runner');
 
 test('calls config and runs exec', async () => {
   const configSpy: jest.SpyInstance = jest.spyOn(config, 'config');
