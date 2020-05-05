@@ -4,8 +4,20 @@ import * as config from '../src/config';
 import * as path from 'path';
 
 import * as exec from '@actions/exec';
+import {rmRF} from '@actions/io';
 
 process.env['RUNNER_TEMP'] = path.join(__dirname, 'runner');
+
+beforeEach(() => {
+  expect(process.env['DOCKER_CONFIG']).toBeUndefined();
+});
+
+afterEach(async () => {
+  if (process.env['DOCKER_CONFIG']) {
+    await rmRF(process.env['DOCKER_CONFIG']);
+    delete process.env['DOCKER_CONFIG'];
+  }
+}, 300000);
 
 test('calls config and runs exec', async () => {
   const configSpy: jest.SpyInstance = jest.spyOn(config, 'config');
