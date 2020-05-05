@@ -1385,14 +1385,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __importStar(__webpack_require__(747));
 const path_1 = __webpack_require__(622);
 const core = __importStar(__webpack_require__(470));
 const io_1 = __webpack_require__(1);
 exports.CONFIG_FILE = 'config.json';
-exports.EXPERIMENTAL_CONFIG = {
-    experimental: 'enabled'
-};
 function config() {
     return __awaiter(this, void 0, void 0, function* () {
         // https://docs.docker.com/engine/reference/commandline/cli/#change-the-docker-directory
@@ -1403,17 +1399,7 @@ function config() {
         console.log(`$DOCKER_CONFIG = ${dir}`);
         const experimental = core.getInput('experimental');
         if (experimental) {
-            const location = path_1.join(dir, exports.CONFIG_FILE);
-            if (fs.existsSync(location)) {
-                console.warn(`overwriting existing file ${location}`);
-            }
-            else {
-                console.log(`writing ${location}`);
-            }
-            fs.writeFileSync(location, JSON.stringify(exports.EXPERIMENTAL_CONFIG), {
-                encoding: 'utf-8',
-                flag: 'w'
-            });
+            core.exportVariable('DOCKER_CLI_EXPERIMENTAL', 'enabled');
         }
     });
 }

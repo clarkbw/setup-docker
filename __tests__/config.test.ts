@@ -30,8 +30,8 @@ test('config directory is created', async () => {
   }
 });
 
-test('config file created for experimental', async () => {
-  process.env[`INPUT_EXPERIMENTAL`] = 'true';
+test('env variable set for experimental features', async () => {
+  process.env[`INPUT_EXPERIMENTAL`] = 'enabled';
 
   await config.config();
 
@@ -42,16 +42,13 @@ test('config file created for experimental', async () => {
     fail();
   }
 
-  const file = path.join(process.env['DOCKER_CONFIG'], config.CONFIG_FILE);
-  expect(fs.existsSync(file)).toBe(true);
-  expect(fs.readFileSync(file, 'utf-8')).toEqual(
-    JSON.stringify(config.EXPERIMENTAL_CONFIG)
-  );
+  expect(process.env['DOCKER_CLI_EXPERIMENTAL']).toBe('enabled');
 
   delete process.env[`INPUT_EXPERIMENTAL`];
 });
 
 test('config directory is cleaned up on exit', async () => {
+  process.env[`INPUT_EXPERIMENTAL`] = 'enabled';
   await config.config();
   expect(process.env['DOCKER_CONFIG']).toBeDefined();
   if (process.env['DOCKER_CONFIG']) {
@@ -65,4 +62,5 @@ test('config directory is cleaned up on exit', async () => {
 
   expect(fs.existsSync(dir)).toBe(false);
   expect(process.env['DOCKER_CONFIG']).toBeUndefined();
+  expect(process.env['DOCKER_CLI_EXPERIMENTAL']).toBeUndefined();
 });

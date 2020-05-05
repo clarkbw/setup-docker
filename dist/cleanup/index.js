@@ -600,6 +600,7 @@ function run() {
             yield io_1.rmRF(directory);
             console.log(`cleanup: removing $DOCKER_CONFIG directory ${directory}`);
         }
+        delete process.env['DOCKER_CLI_EXPERIMENTAL'];
         delete process.env['DOCKER_CONFIG'];
     });
 }

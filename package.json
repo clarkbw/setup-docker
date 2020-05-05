@@ -28,6 +28,7 @@
     "@actions/exec": "^1.0.4"
   },
   "devDependencies": {
+    "@actions/io": "^1.0.2",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.37",
     "@zeit/ncc": "^0.20.5",
