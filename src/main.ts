@@ -1,11 +1,12 @@
-import * as core from '@actions/core';
+import {setFailed} from '@actions/core';
 import {docker} from './docker';
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
-    docker();
-  } catch (error) {
-    core.setFailed(error.message);
+    await docker();
+  } catch (e) {
+    setFailed(e.message);
+    throw e;
   }
 }
 
