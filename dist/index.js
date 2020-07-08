@@ -975,26 +975,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
+const core_1 = __webpack_require__(470);
 const docker_1 = __webpack_require__(216);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            docker_1.docker();
+            yield docker_1.docker();
         }
-        catch (error) {
-            core.setFailed(error.message);
+        catch (e) {
+            core_1.setFailed(e.message);
+            throw e;
         }
     });
 }
+exports.run = run;
 run();
 
 
@@ -1014,26 +1009,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const core = __importStar(__webpack_require__(470));
+const core_1 = __webpack_require__(470);
 const exec_1 = __webpack_require__(986);
 const config_1 = __webpack_require__(641);
 function docker() {
     return __awaiter(this, void 0, void 0, function* () {
-        const username = core.getInput('username', { required: true });
-        const password = core.getInput('password', { required: true });
-        const registry = core.getInput('registry');
-        core.setSecret(password); // should be a no-op but always do this to be safe
-        yield config_1.config();
-        // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
-        return yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], { input: Buffer.from(password) });
+        try {
+            const username = core_1.getInput('username', { required: true });
+            const password = core_1.getInput('password', { required: true });
+            const registry = core_1.getInput('registry');
+            core_1.setSecret(password); // should be a no-op but always do this to be safe
+            yield config_1.config();
+            // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
+            try {
+                return yield exec_1.exec('docker', ['login', registry, '-u', username, '--password-stdin'], { input: Buffer.from(password) });
+            }
+            catch (e) {
+                console.error(`Error logging into ${registry}`, e);
+                throw e;
+            }
+            return -100;
+        }
+        catch (e) {
+            console.error(`Bailing on login attempt ${e}`);
+            throw e;
+        }
+        return -1000;
     });
 }
 exports.docker = docker;
@@ -1388,18 +1390,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __webpack_require__(622);
 const core = __importStar(__webpack_require__(470));
 const io_1 = __webpack_require__(1);
-exports.CONFIG_FILE = 'config.json';
 function config() {
     return __awaiter(this, void 0, void 0, function* () {
-        // https://docs.docker.com/engine/reference/commandline/cli/#change-the-docker-directory
-        const temp = process.env['RUNNER_TEMP'] || '';
-        const dir = path_1.join(temp, `.docker-${Date.now()}`);
-        yield io_1.mkdirP(dir);
-        core.exportVariable('DOCKER_CONFIG', dir);
-        console.log(`$DOCKER_CONFIG = ${dir}`);
-        const experimental = core.getInput('experimental');
-        if (experimental) {
-            core.exportVariable('DOCKER_CLI_EXPERIMENTAL', 'enabled');
+        try {
+            // https://docs.docker.com/engine/reference/commandline/cli/#change-the-docker-directory
+            const temp = process.env['RUNNER_TEMP'] || '';
+            const dir = path_1.join(temp, `.docker-${Date.now()}`);
+            yield io_1.mkdirP(dir);
+            core.exportVariable('DOCKER_CONFIG', dir);
+            console.log(`$DOCKER_CONFIG = ${dir}`);
+            const experimental = core.getInput('experimental');
+            if (experimental) {
+                core.exportVariable('DOCKER_CLI_EXPERIMENTAL', 'enabled');
+                console.log(`DOCKER_CLI_EXPERIMENTAL=enabled`);
+            }
+        }
+        catch (e) {
+            console.error(`Error setting DOCKER_CONFIG`, e);
+            throw e;
         }
     });
 }
