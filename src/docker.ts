@@ -11,12 +11,21 @@ export async function docker(): Promise<number> {
 
   core.setSecret(password); // should be a no-op but always do this to be safe
 
-  await config();
-
-  // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
-  return await exec(
-    'docker',
-    ['login', registry, '-u', username, '--password-stdin'],
-    {input: Buffer.from(password)}
-  );
+  try {
+    await config();
+    // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
+    try {
+      return await exec(
+        'docker',
+        ['login', registry, '-u', username, '--password-stdin'],
+        {input: Buffer.from(password)}
+      );
+    } catch (e) {
+      console.error(`Error logging into ${registry}`, e);
+      return Promise.reject(e);
+    }
+  } catch (e) {
+    console.error(`Bailing on login attempt ${e}`);
+    return Promise.reject(e);
+  }
 }

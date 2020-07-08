@@ -31,7 +31,7 @@ test('calls config and runs exec', async () => {
   const password: string = 'groundcontrol';
   process.env[`INPUT_PASSWORD`] = password;
 
-  const registry: string = 'docker.pkg.github.com';
+  const registry: string = 'https://docker.pkg.github.com';
   process.env[`INPUT_REGISTRY`] = registry;
 
   await docker();
