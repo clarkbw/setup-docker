@@ -8,7 +8,7 @@
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
-    "pack": "ncc build src/main.ts -o dist && ncc build src/cleanup.ts -o dist/cleanup",
+    "pack": "ncc build src/main.ts -o dist && ncc build src/cleanup.ts -o dist/cleanup && ncc build src/credential-helper.ts -o dist/credential-helper",
     "test": "jest",
     "all": "npm run build && npm run format && npm run pack && npm test"
   },
@@ -25,7 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.3",
-    "@actions/exec": "^1.0.4"
+    "@actions/exec": "^1.0.4",
+    "@actions/github": "^4.0.0"
   },
   "devDependencies": {
     "@actions/io": "^1.0.2",
