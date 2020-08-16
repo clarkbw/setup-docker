@@ -15,10 +15,7 @@ jobs:
         npm install
         npm run all
   test: # make sure the action works on a clean machine without building
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-18.04]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: ./
@@ -26,7 +23,3 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
         registry: https://docker.pkg.github.com
-    # - uses: ./
-    #   with: 
-    #     username: clarkbw
-    #     password: ${{ secrets.DOCKER_AUTH }}
