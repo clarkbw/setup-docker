@@ -15,7 +15,7 @@ export async function docker(): Promise<number> {
     try {
       return await exec(
         'docker',
-        ['login', registry, '-u', username, '--password-stdin'],
+        ['login', '--username', username, '--password-stdin', registry],
         {input: Buffer.from(password)}
       );
     } catch (e) {
