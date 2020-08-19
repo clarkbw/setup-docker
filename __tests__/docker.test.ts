@@ -39,7 +39,7 @@ test('calls config and runs exec', async () => {
   expect(configSpy).toHaveBeenCalled();
   expect(execSpy).toHaveBeenCalledWith(
     `docker`,
-    ['login', registry, '-u', username, '--password-stdin'],
+    ['login', '--username', username, '--password-stdin', registry],
     {input: Buffer.from(password)}
   );
 });
