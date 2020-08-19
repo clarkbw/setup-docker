@@ -6,10 +6,12 @@ import * as path from 'path';
 
 import {rmRF} from '@actions/io';
 
-process.env['RUNNER_TEMP'] = path.join(__dirname, 'runner');
+const TEMP_DIR = path.join(__dirname, 'runner', 'temp');
+process.env['RUNNER_TEMP'] = TEMP_DIR;
 
-beforeEach(() => {
+beforeEach(async () => {
   expect(process.env['DOCKER_CONFIG']).toBeUndefined();
+  await rmRF(TEMP_DIR);
 });
 
 afterEach(async () => {

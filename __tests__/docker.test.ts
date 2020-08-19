@@ -6,10 +6,17 @@ import * as path from 'path';
 import * as exec from '@actions/exec';
 import {rmRF} from '@actions/io';
 
-process.env['RUNNER_TEMP'] = path.join(__dirname, 'runner');
+const TOOL_DIR = path.join(__dirname, 'runner', 'tools');
+const TEMP_DIR = path.join(__dirname, 'runner', 'temp');
+process.env['RUNNER_TOOL_CACHE'] = TOOL_DIR;
+process.env['RUNNER_TEMP'] = TEMP_DIR;
 
-beforeEach(() => {
+// will need to clean out this directory for tests
+// await rmRF(TOOL_DIR);
+
+beforeEach(async () => {
   expect(process.env['DOCKER_CONFIG']).toBeUndefined();
+  await rmRF(TEMP_DIR);
 });
 
 afterEach(async () => {
