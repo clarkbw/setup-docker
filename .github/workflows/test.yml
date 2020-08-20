@@ -28,6 +28,7 @@ jobs:
         password: ${{ github.token }}
         registry: https://docker.pkg.github.com
     - name: debug
+      if: ${{ always() }}
       run: |
         ls -R /Users/runner/hostedtoolcache/docker/19.03.12/x86_64/
         which docker
