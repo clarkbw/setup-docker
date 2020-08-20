@@ -1492,7 +1492,6 @@ function cli() {
         core_1.debug(`add path ${path_1.join(cachedPath, 'docker')}`);
         core_1.addPath(path_1.join(cachedPath, 'docker'));
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
-        yield exec_1.exec('which docker');
     });
 }
 function fetch(platform, architecture, version) {
