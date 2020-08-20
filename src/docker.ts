@@ -56,7 +56,8 @@ async function cli() {
   const cachedPath = await tc.cacheDir(
     dockerExtractedFolder,
     'docker',
-    DOCKER_VERSION
+    DOCKER_VERSION,
+    ARCHITECTURE
   );
   addPath(cachedPath);
 }
