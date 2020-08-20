@@ -66,7 +66,7 @@ async function cli() {
   );
   debug(`cachedPath ${cachedPath}`);
   debug(`ENV ${JSON.stringify(process.env)}`);
-  addPath(cachedPath);
+  addPath(join(cachedPath, 'docker'));
   debug(`ENV ${JSON.stringify(process.env)}`);
 }
 
