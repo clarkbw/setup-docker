@@ -65,9 +65,9 @@ async function cli() {
     ARCHITECTURE
   );
   debug(`cachedPath ${cachedPath}`);
-  debug(`ENV ${process.env}`);
+  debug(`ENV ${JSON.stringify(process.env)}`);
   addPath(cachedPath);
-  debug(`ENV ${process.env}`);
+  debug(`ENV ${JSON.stringify(process.env)}`);
 }
 
 async function fetch(platform: string, architecture: string, version: string) {}
