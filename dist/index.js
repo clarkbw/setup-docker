@@ -1467,6 +1467,7 @@ exports.docker = docker;
 function cli() {
     return __awaiter(this, void 0, void 0, function* () {
         const IS_MAC = process.platform === 'darwin';
+        core_1.debug(`IS_MAC ${IS_MAC}`);
         // currently only the Mac requires this install
         if (!IS_MAC) {
             return;
