@@ -61,3 +61,7 @@ async function cli() {
   );
   addPath(cachedPath);
 }
+
+async function fetch(platform: string, architecture: string, version: string) {
+  
+}
