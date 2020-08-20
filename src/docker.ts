@@ -57,17 +57,17 @@ async function cli() {
   debug(`dockerpath ${dockerPath}`);
   const dockerExtractedFolder = await tc.extractTar(dockerPath, PATH);
   debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
+  const BIN = join(dockerExtractedFolder, 'docker');
   const cachedPath = await tc.cacheDir(
-    dockerExtractedFolder,
+    BIN,
     'docker',
     DOCKER_VERSION,
     ARCHITECTURE
   );
   debug(`cachedPath ${cachedPath}`);
-  const BIN = join(cachedPath, 'docker');
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
   debug(`add path ${BIN}`);
-  addPath(BIN);
+  await addPath(BIN);
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
 }
 

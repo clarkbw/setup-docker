@@ -1467,7 +1467,6 @@ exports.docker = docker;
 function cli() {
     return __awaiter(this, void 0, void 0, function* () {
         const IS_MAC = process.platform === 'darwin';
-        core_1.debug(`IS_MAC ${IS_MAC}`);
         // currently only the Mac requires this install
         if (!IS_MAC) {
             return;
@@ -1486,12 +1485,12 @@ function cli() {
         core_1.debug(`dockerpath ${dockerPath}`);
         const dockerExtractedFolder = yield tc.extractTar(dockerPath, PATH);
         core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
-        const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
+        const BIN = path_1.join(dockerExtractedFolder, 'docker');
+        const cachedPath = yield tc.cacheDir(BIN, 'docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`cachedPath ${cachedPath}`);
-        const BIN = path_1.join(cachedPath, 'docker');
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
         core_1.debug(`add path ${BIN}`);
-        core_1.addPath(BIN);
+        yield core_1.addPath(BIN);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
     });
 }
