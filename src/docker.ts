@@ -39,7 +39,6 @@ export async function docker(): Promise<number> {
 
 async function cli() {
   const IS_MAC = process.platform === 'darwin';
-  debug(`IS_MAC ${IS_MAC}`);
   // currently only the Mac requires this install
   if (!IS_MAC) {
     return;
