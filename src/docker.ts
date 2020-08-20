@@ -65,9 +65,10 @@ async function cli() {
     ARCHITECTURE
   );
   debug(`cachedPath ${cachedPath}`);
+  const BIN = join(cachedPath, 'docker');
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
-  debug(`add path ${join(cachedPath, 'docker')}`);
-  addPath(join(cachedPath, 'docker'));
+  debug(`add path ${BIN}`);
+  addPath(BIN);
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
 }
 

@@ -34,4 +34,6 @@ jobs:
       if: ${{ always() }}
       run: |
         ls -R /Users/runner/hostedtoolcache/docker/
+        which docker
+        docker
 

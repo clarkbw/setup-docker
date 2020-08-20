@@ -10,6 +10,9 @@ const TOOL_DIR = path.join(__dirname, 'runner', 'tools');
 const TEMP_DIR = path.join(__dirname, 'runner', 'temp');
 process.env['RUNNER_TOOL_CACHE'] = TOOL_DIR;
 process.env['RUNNER_TEMP'] = TEMP_DIR;
+process.env['RUNNER_DEBUG'] = '1';
+process.env['ACTIONS_RUNNER_DEBUG'] = 'true';
+process.env['ACTIONS_STEP_DEBUG'] = 'true';
 
 // will need to clean out this directory for tests
 // await rmRF(TOOL_DIR);
