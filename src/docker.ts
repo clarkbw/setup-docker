@@ -69,8 +69,6 @@ async function cli() {
   debug(`add path ${join(cachedPath, 'docker')}`);
   addPath(join(cachedPath, 'docker'));
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
-  await exec('which docker');
-  debug('after which');
 }
 
 async function fetch(platform: string, architecture: string, version: string) {}

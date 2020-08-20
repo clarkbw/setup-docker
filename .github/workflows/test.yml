@@ -16,6 +16,7 @@ jobs:
   #       npm run all
   test: # make sure the action works on a clean machine without building
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [macos-latest] #, windows-latest, ubuntu-18.04
@@ -26,4 +27,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
         registry: https://docker.pkg.github.com
-    - run: ls -R /Users/runner/hostedtoolcache/docker/19.03.12/x86_64/
+    - run: |
+        ls -R /Users/runner/hostedtoolcache/docker/19.03.12/x86_64/
+        which docker
+        docker
+
