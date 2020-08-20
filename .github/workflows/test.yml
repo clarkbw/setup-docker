@@ -15,6 +15,9 @@ jobs:
   #       npm install
   #       npm run all
   test: # make sure the action works on a clean machine without building
+    defaults:
+      run:
+        shell: bash
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
@@ -30,7 +33,5 @@ jobs:
     - name: debug
       if: ${{ always() }}
       run: |
-        ls -R /Users/runner/hostedtoolcache/docker/19.03.12/x86_64/
-        which docker
-        docker
+        ls -R /Users/runner/hostedtoolcache/docker/
 
