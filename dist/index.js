@@ -1488,9 +1488,11 @@ function cli() {
         core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
         const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`cachedPath ${cachedPath}`);
-        core_1.debug(`ENV ${JSON.stringify(process.env)}`);
+        core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
+        core_1.debug(`add path ${path_1.join(cachedPath, 'docker')}`);
         core_1.addPath(path_1.join(cachedPath, 'docker'));
-        core_1.debug(`ENV ${JSON.stringify(process.env)}`);
+        core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
+        yield exec_1.exec('which docker');
     });
 }
 function fetch(platform, architecture, version) {
