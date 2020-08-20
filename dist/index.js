@@ -1475,15 +1475,25 @@ function cli() {
         const ARCHITECTURE = 'x86_64'; // https://download.docker.com/mac/static/stable/
         const RELEASE = 'stable'; // edge, nightly, test https://download.docker.com/mac/static/
         const DOCKER_URL = `https://download.docker.com/mac/static/${RELEASE}/${ARCHITECTURE}/docker-${DOCKER_VERSION}.tgz`;
-        console.log(DOCKER_URL);
         // https://github.com/actions/runner/blob/2709cbc0eae592e6004b016c52c04382f19c7683/src/Runner.Common/HostContext.cs#L243-L244
+        core_1.debug(`DOCKER_URL ${DOCKER_URL}`);
         const CACHE_DIR = process.env['RUNNER_TOOL_CACHE'] || '';
+        core_1.debug(`CACHE_DIR ${CACHE_DIR}`);
         const PATH = path_1.join(CACHE_DIR, 'docker', DOCKER_VERSION, ARCHITECTURE);
+        core_1.debug(`PATH ${PATH}`);
         const dockerPath = yield tc.downloadTool(DOCKER_URL);
+        core_1.debug(`dockerpath ${dockerPath}`);
         const dockerExtractedFolder = yield tc.extractTar(dockerPath, PATH);
+        core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
         const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
+        core_1.debug(`cachedPath ${cachedPath}`);
+        core_1.debug(`ENV ${process.env}`);
         core_1.addPath(cachedPath);
+        core_1.debug(`ENV ${process.env}`);
     });
+}
+function fetch(platform, architecture, version) {
+    return __awaiter(this, void 0, void 0, function* () { });
 }
 
 

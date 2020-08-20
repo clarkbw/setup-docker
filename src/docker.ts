@@ -69,6 +69,4 @@ async function cli() {
   debug(`ENV ${process.env}`);
 }
 
-async function fetch(platform: string, architecture: string, version: string) {
-  
-}
+async function fetch(platform: string, architecture: string, version: string) {}
