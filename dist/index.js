@@ -1481,13 +1481,28 @@ function cli() {
         core_1.debug(`CACHE_DIR ${CACHE_DIR}`);
         const PATH = path_1.join(CACHE_DIR, 'docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`PATH ${PATH}`);
-        const dockerPath = yield tc.downloadTool(DOCKER_URL);
-        core_1.debug(`dockerpath ${dockerPath}`);
-        const dockerExtractedFolder = yield tc.extractTar(dockerPath, PATH);
+        let toolPath = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+        core_1.debug(`toolPath ${toolPath}`);
+        let downloadPath = '';
+        try {
+            downloadPath = yield tc.downloadTool(DOCKER_URL);
+        }
+        catch (err) {
+            core_1.setFailed(`Could not download ${err}`);
+        }
+        core_1.debug(`downloadPath ${downloadPath}`);
+        let dockerExtractedFolder = '';
+        try {
+            dockerExtractedFolder = yield tc.extractTar(downloadPath, PATH);
+        }
+        catch (err) {
+            core_1.setFailed(`Could not extractTar ${err}`);
+        }
         core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
-        const BIN = path_1.join(dockerExtractedFolder, 'docker');
-        const cachedPath = yield tc.cacheDir(BIN, 'docker', DOCKER_VERSION, ARCHITECTURE);
+        const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`cachedPath ${cachedPath}`);
+        const BIN = path_1.join(cachedPath, 'docker');
+        core_1.debug(`BIN ${BIN}`);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
         core_1.debug(`add path ${BIN}`);
         yield core_1.addPath(BIN);

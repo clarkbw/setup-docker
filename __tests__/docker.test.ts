@@ -30,6 +30,10 @@ afterEach(async () => {
   }
 }, 300000);
 
+if (process.platform === 'darwin') {
+  jest.setTimeout(300000);
+}
+
 test('calls config and runs exec', async () => {
   const configSpy: jest.SpyInstance = jest.spyOn(config, 'config');
   const execSpy: jest.SpyInstance = jest.spyOn(exec, 'exec');

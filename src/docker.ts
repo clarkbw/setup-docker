@@ -1,4 +1,4 @@
-import {getInput, setSecret, addPath, debug} from '@actions/core';
+import {getInput, setSecret, addPath, debug, setFailed} from '@actions/core';
 import {exec} from '@actions/exec';
 import * as tc from '@actions/tool-cache';
 import {join} from 'path';
@@ -53,18 +53,37 @@ async function cli() {
   debug(`CACHE_DIR ${CACHE_DIR}`);
   const PATH = join(CACHE_DIR, 'docker', DOCKER_VERSION, ARCHITECTURE);
   debug(`PATH ${PATH}`);
-  const dockerPath = await tc.downloadTool(DOCKER_URL);
-  debug(`dockerpath ${dockerPath}`);
-  const dockerExtractedFolder = await tc.extractTar(dockerPath, PATH);
+
+  let toolPath: string = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+  debug(`toolPath ${toolPath}`);
+
+  let downloadPath: string = '';
+  try {
+    downloadPath = await tc.downloadTool(DOCKER_URL);
+  } catch (err) {
+    setFailed(`Could not download ${err}`);
+  }
+  debug(`downloadPath ${downloadPath}`);
+
+  let dockerExtractedFolder: string = '';
+  try {
+    dockerExtractedFolder = await tc.extractTar(downloadPath, PATH);
+  } catch (err) {
+    setFailed(`Could not extractTar ${err}`);
+  }
   debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
-  const BIN = join(dockerExtractedFolder, 'docker');
+
   const cachedPath = await tc.cacheDir(
-    BIN,
+    dockerExtractedFolder,
     'docker',
     DOCKER_VERSION,
     ARCHITECTURE
   );
   debug(`cachedPath ${cachedPath}`);
+
+  const BIN = join(cachedPath, 'docker');
+  debug(`BIN ${BIN}`);
+
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
   debug(`add path ${BIN}`);
   await addPath(BIN);
