@@ -1483,29 +1483,32 @@ function cli() {
         core_1.debug(`PATH ${PATH}`);
         let toolPath = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`toolPath ${toolPath}`);
-        let downloadPath = '';
-        try {
-            downloadPath = yield tc.downloadTool(DOCKER_URL);
+        if (!toolPath) {
+            let downloadPath = '';
+            try {
+                downloadPath = yield tc.downloadTool(DOCKER_URL);
+            }
+            catch (err) {
+                core_1.setFailed(`Could not download ${err}`);
+            }
+            core_1.debug(`downloadPath ${downloadPath}`);
+            let dockerExtractedFolder = '';
+            try {
+                dockerExtractedFolder = yield tc.extractTar(downloadPath, PATH);
+            }
+            catch (err) {
+                core_1.setFailed(`Could not extractTar ${err}`);
+            }
+            core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
+            const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
+            core_1.debug(`cachedPath ${cachedPath}`);
+            toolPath = cachedPath;
         }
-        catch (err) {
-            core_1.setFailed(`Could not download ${err}`);
-        }
-        core_1.debug(`downloadPath ${downloadPath}`);
-        let dockerExtractedFolder = '';
-        try {
-            dockerExtractedFolder = yield tc.extractTar(downloadPath, PATH);
-        }
-        catch (err) {
-            core_1.setFailed(`Could not extractTar ${err}`);
-        }
-        core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
-        const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
-        core_1.debug(`cachedPath ${cachedPath}`);
-        const BIN = path_1.join(cachedPath, 'docker');
-        core_1.debug(`BIN ${BIN}`);
+        toolPath = path_1.join(toolPath, 'docker');
+        core_1.debug(`toolPath ${toolPath}`);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
-        core_1.debug(`add path ${BIN}`);
-        yield core_1.addPath(BIN);
+        core_1.debug(`add path ${toolPath}`);
+        yield core_1.addPath(toolPath);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
     });
 }

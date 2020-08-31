@@ -30,6 +30,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
         registry: https://docker.pkg.github.com
+    - name: check cache
+      uses: ./
+      with: 
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+        registry: https://docker.pkg.github.com
     - name: debug
       if: ${{ always() }}
       run: |

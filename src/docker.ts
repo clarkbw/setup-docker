@@ -57,36 +57,40 @@ async function cli() {
   let toolPath: string = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
   debug(`toolPath ${toolPath}`);
 
-  let downloadPath: string = '';
-  try {
-    downloadPath = await tc.downloadTool(DOCKER_URL);
-  } catch (err) {
-    setFailed(`Could not download ${err}`);
+  if (!toolPath) {
+    let downloadPath: string = '';
+    try {
+      downloadPath = await tc.downloadTool(DOCKER_URL);
+    } catch (err) {
+      setFailed(`Could not download ${err}`);
+    }
+    debug(`downloadPath ${downloadPath}`);
+
+    let dockerExtractedFolder: string = '';
+    try {
+      dockerExtractedFolder = await tc.extractTar(downloadPath, PATH);
+    } catch (err) {
+      setFailed(`Could not extractTar ${err}`);
+    }
+    debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
+
+    const cachedPath = await tc.cacheDir(
+      dockerExtractedFolder,
+      'docker',
+      DOCKER_VERSION,
+      ARCHITECTURE
+    );
+    debug(`cachedPath ${cachedPath}`);
+
+    toolPath = cachedPath;
   }
-  debug(`downloadPath ${downloadPath}`);
 
-  let dockerExtractedFolder: string = '';
-  try {
-    dockerExtractedFolder = await tc.extractTar(downloadPath, PATH);
-  } catch (err) {
-    setFailed(`Could not extractTar ${err}`);
-  }
-  debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
-
-  const cachedPath = await tc.cacheDir(
-    dockerExtractedFolder,
-    'docker',
-    DOCKER_VERSION,
-    ARCHITECTURE
-  );
-  debug(`cachedPath ${cachedPath}`);
-
-  const BIN = join(cachedPath, 'docker');
-  debug(`BIN ${BIN}`);
+  toolPath = join(toolPath, 'docker');
+  debug(`toolPath ${toolPath}`);
 
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
-  debug(`add path ${BIN}`);
-  await addPath(BIN);
+  debug(`add path ${toolPath}`);
+  await addPath(toolPath);
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
 }
 
