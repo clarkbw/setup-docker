@@ -1023,7 +1023,7 @@ function docker() {
             yield config_1.config();
             // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
             try {
-                return yield exec_1.exec('docker', ['login', '--username', username, '--password-stdin', registry], { input: Buffer.from(password) });
+                return yield exec_1.exec('docker', ['login', '--username', username, '--password-stdin', registry], { input: Buffer.from(password), silent: true });
             }
             catch (e) {
                 console.error(`Error logging into ${registry}`, e);
