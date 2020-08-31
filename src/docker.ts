@@ -16,7 +16,7 @@ export async function docker(): Promise<number> {
       return await exec(
         'docker',
         ['login', '--username', username, '--password-stdin', registry],
-        {input: Buffer.from(password)}
+        {input: Buffer.from(password), silent: true}
       );
     } catch (e) {
       console.error(`Error logging into ${registry}`, e);
