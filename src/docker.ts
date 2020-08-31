@@ -54,7 +54,12 @@ async function cli() {
   const PATH = join(CACHE_DIR, 'docker', DOCKER_VERSION, ARCHITECTURE);
   debug(`PATH ${PATH}`);
 
-  let toolPath: string = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+  let toolPath: string = '';
+  try {
+    toolPath = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+  } catch (err) {
+    setFailed(`Could not find toolpath ${err}`);
+  }
   debug(`toolPath ${toolPath}`);
 
   if (!toolPath) {
@@ -62,7 +67,7 @@ async function cli() {
     try {
       downloadPath = await tc.downloadTool(DOCKER_URL);
     } catch (err) {
-      setFailed(`Could not download ${err}`);
+      setFailed(`Could not download tool ${err}`);
     }
     debug(`downloadPath ${downloadPath}`);
 
@@ -70,7 +75,7 @@ async function cli() {
     try {
       dockerExtractedFolder = await tc.extractTar(downloadPath, PATH);
     } catch (err) {
-      setFailed(`Could not extractTar ${err}`);
+      setFailed(`Could not extract tar ${err}`);
     }
     debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
 
@@ -90,7 +95,7 @@ async function cli() {
 
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
   debug(`add path ${toolPath}`);
-  await addPath(toolPath);
+  addPath(toolPath);
   debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
 }
 

@@ -11,7 +11,7 @@ process.env['RUNNER_TEMP'] = TEMP_DIR;
 
 beforeEach(async () => {
   expect(process.env['DOCKER_CONFIG']).toBeUndefined();
-  await rmRF(TEMP_DIR);
+  // await rmRF(TEMP_DIR);
 });
 
 afterEach(async () => {

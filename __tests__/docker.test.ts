@@ -19,8 +19,8 @@ process.env['ACTIONS_STEP_DEBUG'] = 'true';
 
 beforeEach(async () => {
   expect(process.env['DOCKER_CONFIG']).toBeUndefined();
-  await rmRF(TEMP_DIR);
-  await rmRF(TOOL_DIR);
+  // await rmRF(TEMP_DIR);
+  // await rmRF(TOOL_DIR);
 });
 
 afterEach(async () => {

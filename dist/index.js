@@ -1481,7 +1481,13 @@ function cli() {
         core_1.debug(`CACHE_DIR ${CACHE_DIR}`);
         const PATH = path_1.join(CACHE_DIR, 'docker', DOCKER_VERSION, ARCHITECTURE);
         core_1.debug(`PATH ${PATH}`);
-        let toolPath = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+        let toolPath = '';
+        try {
+            toolPath = tc.find('docker', DOCKER_VERSION, ARCHITECTURE);
+        }
+        catch (err) {
+            core_1.setFailed(`Could not find toolpath ${err}`);
+        }
         core_1.debug(`toolPath ${toolPath}`);
         if (!toolPath) {
             let downloadPath = '';
@@ -1489,7 +1495,7 @@ function cli() {
                 downloadPath = yield tc.downloadTool(DOCKER_URL);
             }
             catch (err) {
-                core_1.setFailed(`Could not download ${err}`);
+                core_1.setFailed(`Could not download tool ${err}`);
             }
             core_1.debug(`downloadPath ${downloadPath}`);
             let dockerExtractedFolder = '';
@@ -1497,7 +1503,7 @@ function cli() {
                 dockerExtractedFolder = yield tc.extractTar(downloadPath, PATH);
             }
             catch (err) {
-                core_1.setFailed(`Could not extractTar ${err}`);
+                core_1.setFailed(`Could not extract tar ${err}`);
             }
             core_1.debug(`dockerExtractedFolder ${dockerExtractedFolder}`);
             const cachedPath = yield tc.cacheDir(dockerExtractedFolder, 'docker', DOCKER_VERSION, ARCHITECTURE);
@@ -1508,7 +1514,7 @@ function cli() {
         core_1.debug(`toolPath ${toolPath}`);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
         core_1.debug(`add path ${toolPath}`);
-        yield core_1.addPath(toolPath);
+        core_1.addPath(toolPath);
         core_1.debug(`ENV ${JSON.stringify(process.env['PATH'])}`);
     });
 }
