@@ -1,12 +1,13 @@
 import {getInput, setSecret} from '@actions/core';
 import {exec} from '@actions/exec';
 import {config} from './config';
+import {default as prepend} from 'prepend-http';
 
 export async function docker(): Promise<number> {
   try {
     const username: string = getInput('username', {required: true});
     const password: string = getInput('password', {required: true});
-    const registry: string = getInput('registry');
+    const registry: string = getInput('registry') || 'docker.io';
 
     setSecret(password); // should be a no-op but always do this to be safe
 
@@ -15,7 +16,13 @@ export async function docker(): Promise<number> {
     try {
       return await exec(
         'docker',
-        ['login', '--username', username, '--password-stdin', registry],
+        [
+          'login',
+          '--username',
+          username,
+          '--password-stdin',
+          prepend(registry)
+        ],
         {input: Buffer.from(password), silent: true}
       );
     } catch (e) {
