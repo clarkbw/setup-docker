@@ -954,6 +954,33 @@ module.exports = require("os");
 
 /***/ }),
 
+/***/ 128:
+/***/ (function(module) {
+
+"use strict";
+
+module.exports = (url, options) => {
+	if (typeof url !== 'string') {
+		throw new TypeError(`Expected \`url\` to be of type \`string\`, got \`${typeof url}\``);
+	}
+
+	url = url.trim();
+
+	options = {
+		https: true,
+		...options
+	};
+
+	if (/^\.*\/|^(?!localhost)\w+:/.test(url)) {
+		return url;
+	}
+
+	return url.replace(/^(?!(?:\w+:)?\/\/)/, options.https ? 'https://' : 'http://');
+};
+
+
+/***/ }),
+
 /***/ 129:
 /***/ (function(module) {
 
@@ -1009,21 +1036,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = __webpack_require__(470);
 const exec_1 = __webpack_require__(986);
 const config_1 = __webpack_require__(641);
+const prepend_http_1 = __importDefault(__webpack_require__(128));
 function docker() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const username = core_1.getInput('username', { required: true });
             const password = core_1.getInput('password', { required: true });
-            const registry = core_1.getInput('registry');
+            const registry = core_1.getInput('registry') || 'docker.io';
             core_1.setSecret(password); // should be a no-op but always do this to be safe
             yield config_1.config();
             // echo $TOKEN | docker login docker.pkg.github.com -u clarkbw --password-stdin
             try {
-                return yield exec_1.exec('docker', ['login', '--username', username, '--password-stdin', registry], { input: Buffer.from(password), silent: true });
+                return yield exec_1.exec('docker', [
+                    'login',
+                    '--username',
+                    username,
+                    '--password-stdin',
+                    prepend_http_1.default(registry)
+                ], { input: Buffer.from(password), silent: true });
             }
             catch (e) {
                 console.error(`Error logging into ${registry}`, e);

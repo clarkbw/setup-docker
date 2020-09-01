@@ -7,8 +7,8 @@ inputs:
   password:
     description: 'password or token for docker registry'
   registry:
-    description: 'URL for the docker registry, e.g. https://docker.pkg.github.com'
-    default: 'https://containers.pkg.github.com'
+    description: 'URL for the docker registry, e.g. https://ghcr.io'
+    default: 'docker.io'
   experimental:
     description: 'turn on experimental docker client features by setting to "enabled"'
 
